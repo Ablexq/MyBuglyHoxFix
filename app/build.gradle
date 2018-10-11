@@ -9,8 +9,7 @@ def verCode() {
         Properties versionProps = new Properties()
         versionProps.load(new FileInputStream(versionPropsFile))
 
-        def int verCode = versionProps['VERSION_CODE'].toInteger()
-        return verCode;
+        return versionProps['VERSION_CODE'].toInteger()
     } else {
         throw new GradleException("Could not read gradle.properties")
     }
@@ -65,6 +64,19 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.tinker
+            //apk命名
+            applicationVariants.all { variant ->
+                //variant.outputs.each { output ->                  //3.0以下
+                variant.outputs.all { output ->                     //3.0以上
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        // 输出apk名称为release_v0.1_2017-02-26.apk
+                        def fileName = "release_v${defaultConfig.versionName}_${releaseTime()}.apk"
+                        //output.outputFile = new File(outputFile.parent, fileName)    //3.0以下
+                        outputFileName = fileName                                       //3.0以上
+                    }
+                }
+            }
         }
     }
 
@@ -88,4 +100,8 @@ dependencies {
     compile 'com.tencent.tinker:tinker-android-lib:1.9.6'
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+}
+
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
