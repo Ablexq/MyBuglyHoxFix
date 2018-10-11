@@ -8,7 +8,7 @@
 
 # 官网
 
-[Bugly Android热更新详解]()
+[Bugly Android热更新详解](https://bugly.qq.com/docs/user-guide/instruction-manual-android-hotfix/)
 
 
 
